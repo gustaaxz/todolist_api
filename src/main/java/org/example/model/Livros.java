@@ -1,8 +1,8 @@
 package org.example.model;
 
 public class Livros {
-    private int id, ano;
-    private String titulo, autor;
+    private int id, ano, idEmprestimo, idLivro;
+    private String titulo, autor, tituloLivro;
     private boolean disponivel;
 
     public Livros(int id, int ano, String titulo, String autor, boolean disponivel) {
@@ -18,6 +18,30 @@ public class Livros {
         this.titulo = titulo;
         this.autor = autor;
         this.disponivel = disponivel;
+    }
+
+    public Livros(String titulo, String autor, int ano) {
+        this.titulo = titulo;
+        this.autor = autor;
+        this.ano = ano;
+    }
+
+    public Livros(int idEmprestimo, int idLivro, String tituloLivro) {
+        this.idEmprestimo = idEmprestimo;
+        this.idLivro = idLivro;
+        this.tituloLivro = tituloLivro;
+    }
+
+    public int getIdEmprestimo() {
+        return idEmprestimo;
+    }
+
+    public int getIdLivro() {
+        return idLivro;
+    }
+
+    public String getTituloLivro() {
+        return tituloLivro;
     }
 
     public int getId() {
@@ -54,5 +78,17 @@ public class Livros {
 
     public void setDisponivel(boolean disponivel) {
         this.disponivel = disponivel;
+    }
+
+    public void setIdEmprestimo(int idEmprestimo) {
+        this.idEmprestimo = idEmprestimo;
+    }
+
+    public void setIdLivro(int idLivro) {
+        this.idLivro = idLivro;
+    }
+
+    public void setTituloLivro(String tituloLivro) {
+        this.tituloLivro = tituloLivro;
     }
 }
