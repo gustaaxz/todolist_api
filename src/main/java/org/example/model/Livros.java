@@ -32,6 +32,15 @@ public class Livros {
         this.tituloLivro = tituloLivro;
     }
 
+    public Livros(int idLivro, boolean disponivel) {
+        this.idLivro = idLivro;
+        this.disponivel = disponivel;
+    }
+
+    public Livros() {
+
+    }
+
     public int getIdEmprestimo() {
         return idEmprestimo;
     }

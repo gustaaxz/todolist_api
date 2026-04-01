@@ -8,20 +8,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class LivroRepository {
-    static Scanner sc = new Scanner(System.in);
+
     public static void cadastrarLivroBancoDeDados(Livros livros) throws SQLException {
         String command = """
                 INSERT INTO livros
                 (titulo, autor, ano)
-                VALUES
-                (?, ?, ?)
+                VALUES (?, ?, ?)
                 """;
 
         try (Connection conn = Conexao.conectar();
-             PreparedStatement stmt = conn.prepareStatement(command)){
+             PreparedStatement stmt = conn.prepareStatement(command)) {
             stmt.setString(1, livros.getTitulo());
             stmt.setString(2, livros.getAutor());
             stmt.setInt(3, livros.getAno());
@@ -29,51 +27,51 @@ public class LivroRepository {
         }
     }
 
-    public static void consultarTodosEmprestimosFeitos() throws SQLException {
+    public static List<Livros> consultarTodosEmprestimosFeitos() {
         String query = """
-                        SELECT e.id, e.livro_id, l.titulo
-                        FROM emprestimos e
-                        JOIN livros l ON e.livro_id = l.id;
-                        """;
+                SELECT e.id, e.livro_id, l.titulo
+                FROM emprestimos e
+                JOIN livros l ON e.livro_id = l.id
+                """;
+        List<Livros> lista = new ArrayList<>();
 
-        try(Connection conn = Conexao.conectar();
-            PreparedStatement stmt = conn.prepareStatement(query)){
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             ResultSet rs = stmt.executeQuery();
-            List<Livros> livros = new ArrayList<>();
-            while (rs.next()){
-                String tituloLivro = rs.getString("l.titulo");
-                int idEmprestimo = rs.getInt("e.id");
-                int idLivro = rs.getInt("e.livro_id");
-
-                livros.add(new Livros(idEmprestimo, idLivro,tituloLivro));
+            while (rs.next()) {
+                lista.add(new Livros(
+                        rs.getInt("id"),
+                        rs.getInt("livro_id"),
+                        rs.getString("titulo")
+                ));
             }
         } catch (SQLException e) {
-            System.out.println("Erro!");
             e.printStackTrace();
         }
+        return lista;
     }
 
-    public static void consultarTodosLivros() throws SQLException {
+    public static List<Livros> consultarTodosLivros() {
         String query = """
-                        SELECT titulo, autor, ano 
-                        FROM livros
-                        """;
+                SELECT titulo, autor, ano 
+                FROM livros
+                """;
+        List<Livros> lista = new ArrayList<>();
 
-        try(Connection conn = Conexao.conectar();
-            PreparedStatement stmt = conn.prepareStatement(query)){
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             ResultSet rs = stmt.executeQuery();
-            List<Livros> livros = new ArrayList<>();
-            while (rs.next()){
-                String titulo = rs.getString("titulo");
-                String autor = rs.getString("autor");
-                int ano = rs.getInt("ano");
-
-                livros.add(new Livros(titulo, autor, ano));
+            while (rs.next()) {
+                lista.add(new Livros(
+                        rs.getString("titulo"),
+                        rs.getString("autor"),
+                        rs.getInt("ano")
+                ));
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao listar todos os livros!");
             e.printStackTrace();
         }
+        return lista;
     }
 
     public static void atualizarStatusDisponibilidadeLivro(Livros livro) throws SQLException {
@@ -84,7 +82,7 @@ public class LivroRepository {
                 """;
 
         try (Connection conn = Conexao.conectar();
-             PreparedStatement stmt = conn.prepareStatement(command)){
+             PreparedStatement stmt = conn.prepareStatement(command)) {
             stmt.setBoolean(1, livro.isDisponivel());
             stmt.setInt(2, livro.getIdLivro());
             stmt.executeUpdate();
